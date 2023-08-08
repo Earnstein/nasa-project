@@ -17,7 +17,6 @@ function httpGetAllSongs(req, res){
 
 function httpAddNewLaunch(req, res) {
   const launch = req.body; //json request
-
   if (
     !launch.mission ||
     !launch.rocket ||
