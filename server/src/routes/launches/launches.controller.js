@@ -1,21 +1,16 @@
 const {
   getAllLaunches,
-  addNewLaunch,
+  scheduleNewLaunch,
   existLaunchWithId,
   abortLaunchById,
-  addNewSong,
-  getAllSongs
 } = require("../../models/launches.model");
 
-function httpGetAllLaunches(req, res) {
-  return res.status(200).json(getAllLaunches());
+async function httpGetAllLaunches(req, res) {
+  return res.status(200).json(await getAllLaunches());
 }
 
-function httpGetAllSongs(req, res){
-  return res.status(200).json(getAllSongs())
-}
 
-function httpAddNewLaunch(req, res) {
+async function httpAddNewLaunch(req, res) {
   const launch = req.body; //json request
   if (
     !launch.mission ||
@@ -34,37 +29,33 @@ function httpAddNewLaunch(req, res) {
       error: "Invalid Launch Date",
     });
   }
-  addNewLaunch(launch);
+ await scheduleNewLaunch(launch);
   return res.status(201).json(launch);
 }
 
-function httpAddNewSong(req, res){
-    const song = req.body; //json request
-    if (!song.artist || !song.song) {
-      return res.status(400).json({
-        error: "Missing required song property",
-      });
-    };
-    addNewSong(song);
-    return res.status(201).json(song)
-}
 
-function httpAbortLaunch(req, res) {
+async function httpAbortLaunch(req, res) {
   const launchId = Number(req.params.id);
   //if launch does not exist
-  if (!existLaunchWithId(launchId)) {
+  const existsLaunch = await existLaunchWithId(launchId);
+  if (!existsLaunch) {
     return res.status(404).json({
       error: "Launch not found",
     });
   }
   // if launch does exist
-  const aborted = abortLaunchById(launchId)
-  return res.status(200).json(aborted);
+  const aborted = await abortLaunchById(launchId)
+  if (!aborted){
+    return res.status(400).json({
+      error: "Launch not aborted"
+    })
+  }
+  return res.status(200).json({
+    ok: true
+  });
 }
 module.exports = {
   httpGetAllLaunches,
   httpAddNewLaunch,
   httpAbortLaunch,
-  httpGetAllSongs,
-  httpAddNewSong,
 };
