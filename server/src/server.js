@@ -1,4 +1,6 @@
-const http = require("http");
+const https = require("https");
+const fs = require("fs");
+require('dotenv').config();
 
 const { mongoConnect } = require("./services/mongo");
 const app = require("./app");
@@ -6,7 +8,12 @@ const { loadPlanetsData } = require("./models/planets.model");
 const { LoadLaunchData } = require("./models/launches.model");
 const PORT = process.env.PORT || 8000;
 
-const server = http.createServer(app);
+const options = {
+  key: fs.readFileSync('key.pem'),   
+  cert: fs.readFileSync('cert.pem'),
+};
+
+const server = https.createServer(options ,app);
 
 
 async function startServer() {

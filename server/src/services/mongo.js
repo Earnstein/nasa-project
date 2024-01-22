@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 require('dotenv').config();
 
-const config = {
-  MONGO_URI: process.env.MONGO_URI,
-}
-
-const MONGO_URL = config.MONGO_URI
+const MONGO_URL = process.env.MONGO_URL
 
 mongoose.connection.once("open", () => {
   console.log("Mongodb connection is ready!...");

@@ -10,6 +10,8 @@
 
 # production
 /build
+key.pem
+cert.pem
 
 # misc
 .env
